@@ -53,8 +53,10 @@ public class AndroAuthPlugin {
 
         try
         {
+            Log.d("AndroMainActivity", "Initialize message : " + message.jsonData);
+
             JSONObject jsonObj = new JSONObject(message.jsonData);
-            String provider = jsonObj.optString("provider");
+            String provider = jsonObj.optString("providerName");
 
             AndroAuthProvider authProvider = AuthProviderExtention.GetAuthProvider(provider);
 
@@ -79,8 +81,10 @@ public class AndroAuthPlugin {
 
         try
         {
+            Log.d("AndroMainActivity", "login message : " + message.jsonData);
+
             JSONObject jsonObj = new JSONObject(message.jsonData);
-            tryLoginProvider = jsonObj.optString("provider");
+            tryLoginProvider = jsonObj.optString("providerName");
 
         } catch (JSONException e) {
             e.printStackTrace();

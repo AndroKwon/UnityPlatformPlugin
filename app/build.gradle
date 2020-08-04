@@ -2,8 +2,25 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-group 'com.andro.unityplatformplugin'
-version '0.0.3'
+group 'com.andro.unityplatformplugin.common'
+version '0.0.8'
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name 'AndroPlatformPlugin'
+            description 'Is bintray AndroPlatformPlugin'
+            url ''
+            inceptionYear ''
+
+            // gradle dependency
+            packaging 'aar'
+            groupId 'com.andro.unityplatformplugin.common' // compile 'tech.thdev:
+            artifactId 'app'// :bintray-sample:
+            version '0.0.8' // :0.0.1-alpha
+        }
+    }
+}
 
 bintray {
     user = 'numicn'
@@ -31,10 +48,10 @@ bintray {
         githubReleaseNotesFile = '' // Optional Github readme file
 
         version {
-            name = '0.0.3' // The name of your library project
+            name = '0.0.8' // The name of your library project
             desc = 'Gradle Andro UnityPlatformPlugin' // Optional - Version-specific description'
             released  = new Date() // Optional - Date of the version release. 2 possible values: date in the format of 'yyyy-MM-dd'T'HH:mm:ss.SSSZZ' OR a java.util.Date instance
-            vcsTag ='0.0.3'
+            vcsTag ='0.0.8'
         }
     }
 }
@@ -59,5 +76,23 @@ dependencies {
 
     implementation 'com.android.support:appcompat-v7:28.0.0'
 
-    implementation 'com.google.code.gson:gson:2.8.5'
+    compile 'com.google.code.gson:gson:2.8.5'
+}
+
+
+
+// JCenter publish
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+task findConventions {
+    doLast {
+        println project.getConvention()
+    }
 }
