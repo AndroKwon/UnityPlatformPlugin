@@ -45,9 +45,9 @@ public class UnityMessageSender {
         }
     }
 
-    public void sendMessage(String gameObjectName, String responseMethodName, NativeMessage message) {
-        this.setGameObjectName(gameObjectName);
-        this.setResponseMethodName(responseMethodName);
+    public void sendMessage(UnityMessage message) {
+        this.setGameObjectName(message.gameObjectName);
+        this.setResponseMethodName(message.responseMethodName);
         this.setMessage(message);
         this.sendMessage();
     }

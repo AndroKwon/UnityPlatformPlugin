@@ -10,16 +10,15 @@ import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Method;
-
 public class AndroAuthPlugin {
 
     public static String AUTH_INITIALIZE = "andro://authInitialize";
     public static String AUTH_LOGIN = "andro://login";
     public static String AUTH_LOGOUT = "andro://logout";
+    public static String AUTH_IS_LOGIN = "andro://isLogin";
 
-    private static String tryLoginProvider;
-    private static String currentLoginProvider;
+    private static String tryLoginProvider = "";
+    private static String currentLoginProvider = "";
 
     public AndroAuthPlugin()
     {
@@ -41,6 +40,13 @@ public class AndroAuthPlugin {
             @Override
             public void onAsyncDelegate(String var1, MessageManager.MessageListener var2) {
                 AndroAuthPlugin.this.logout(var1, var2);
+            }
+        });
+
+        MessageManager.addSyncDelegate(AUTH_IS_LOGIN, new MessageManager.SyncListener() {
+            @Override
+            public String onSyncDelegate(String var1, MessageManager.MessageListener var2) {
+                return AndroAuthPlugin.this.IsLogin(var1, var2);
             }
         });
     }
@@ -96,29 +102,34 @@ public class AndroAuthPlugin {
         {
             authProvider.login(new AndroAuthProviderCallback() {
                 @Override
-                public void OnCallback(boolean success, String recvData) {
+                public void OnCallback(boolean success, String token) {
 
                     Log.d("AndroMainActivity", "login recv!");
 
-                    NativeMessage message = (NativeMessage)(new Gson()).fromJson(jsonData, (new NativeMessage()).getClass());
+                    NativeMessage message = new NativeMessage();
 
-                    JsonObject object = new JsonObject();
-                    object.addProperty("provider", tryLoginProvider);
-
-                    try {
-                        JSONObject recvJsonObj = new JSONObject(recvData);
-                        object.addProperty("token", recvJsonObj.optString("token"));
-                    }
-                    catch (Exception e)
+                    if(success)
                     {
-                        e.printStackTrace();
+                        JsonObject object = new JsonObject();
+                        object.addProperty("providerName", tryLoginProvider);
+                        object.addProperty("token", token);
+
+                        message.jsonData = object.toString();
+
+                        currentLoginProvider = tryLoginProvider;
+
+                        messageListener.onSendMessage(jsonData, message);
                     }
+                    else
+                    {
+                        JsonObject object = new JsonObject();
+                        object.addProperty("code", AndroErrorResponse.AUTH_LOGIN_FAIL);
+                        object.addProperty("message", "AUTH Failed");
 
-                    message.jsonData = object.toString();
+                        message.error = object.toString();
 
-                    currentLoginProvider = tryLoginProvider;
-
-                    messageListener.onSendMessage(jsonData, message);
+                        messageListener.onSendMessage(jsonData, message);
+                    }
                 }
             });
         }
@@ -138,11 +149,40 @@ public class AndroAuthPlugin {
 
                     Log.d("AndroMainActivity", "logout recv!");
 
-                    NativeMessage message = (NativeMessage)(new Gson()).fromJson(jsonData, (new NativeMessage()).getClass());
-                    messageListener.onSendMessage(jsonData, message);
+                    NativeMessage message = new NativeMessage();
+
+                    if(success)
+                    {
+                        JsonObject object = new JsonObject();
+                        object.addProperty("providerName", tryLoginProvider);
+
+                        message.jsonData = object.toString();
+
+                        currentLoginProvider = "";
+
+                        messageListener.onSendMessage(jsonData, message);
+                    }
+                    else
+                    {
+                        JsonObject object = new JsonObject();
+                        object.addProperty("code", AndroErrorResponse.AUTH_LOGOUT_FAIL);
+                        object.addProperty("message", "AUTH Failed");
+
+                        message.error = object.toString();
+
+                        messageListener.onSendMessage(jsonData, message);
+                    }
                 }
             });
         }
+    }
+
+
+    public String IsLogin(final String jsonData, final MessageManager.MessageListener messageListener)
+    {
+        Log.d("AndroMainActivity", "IsLogin called!");
+
+        return currentLoginProvider;
     }
 
 }
