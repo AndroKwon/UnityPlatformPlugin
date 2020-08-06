@@ -3,7 +3,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 group 'com.andro.unityplatformplugin.common'
-version '0.0.15'
+version '0.0.16'
 
 bintray {
     user = 'numicn'
@@ -31,10 +31,10 @@ bintray {
         githubReleaseNotesFile = '' // Optional Github readme file
 
         version {
-            name = '0.0.15' // The name of your library project
+            name = '0.0.16' // The name of your library project
             desc = 'Gradle Andro UnityPlatformPlugin' // Optional - Version-specific description'
             released  = new Date() // Optional - Date of the version release. 2 possible values: date in the format of 'yyyy-MM-dd'T'HH:mm:ss.SSSZZ' OR a java.util.Date instance
-            vcsTag ='0.0.15'
+            vcsTag ='0.0.16'
         }
     }
 }
