@@ -33,7 +33,7 @@ buildscript {
     }
 ```
 
-사용할 라이브러리를 추가합니다.
+사용할 라이브러리를 추가합니다. https://bintray.com/beta/#/numicn/AndroAndroidPlugin?tab=packages ( 추가하기전 라이브러리 버전 확인 )
 ```
 dependencies {
 	  implementation 'com.andro.unityplatformplugin.common:app:0.0.16'
